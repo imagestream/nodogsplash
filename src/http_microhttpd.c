@@ -392,7 +392,7 @@ static int check_faskey_match(const char *fas_key, const char *tok, const char *
 			return 0;
 		}
 
-		debug(LOG_DEBUG, "fas_auth=%s fas_key=%s ", fas_auth, fas_key);
+		debug(LOG_DEBUG, "fas_auth=%s ", fas_auth);
         	uh_b64decode(buf, 256, fas_auth, strlen(fas_auth));
         	memcpy(iv, buf, AES_256_IV_LEN);
         	AES_init_ctx_iv(&ctx, fas_key, iv);
