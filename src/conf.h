@@ -156,6 +156,7 @@ typedef struct {
 	int fas_secure_enabled;		/**< @brief Enable Secure FAS */
 	char *fas_path;			/**< @brief Path to forward authentication page of FAS */
 	char *fas_remoteip;		/**< @brief IP addess of a remote FAS */
+	char *fas_key;			/**< @brief PSK used by NDS to authenticate FAS */
 	char *webroot;			/**< @brief Directory containing splash pages, etc. */
 	char *splashpage;		/**< @brief Name of main splash page */
 	char *statuspage;		/**< @brief Name of info status page */

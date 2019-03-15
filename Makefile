@@ -2,6 +2,7 @@
 CC?=gcc
 CFLAGS?=-O2 -g -Wall
 CFLAGS+=-Isrc
+CFLAGS+=-DAES256=1
 #CFLAGS+=-Wall -Wwrite-strings -pedantic -std=gnu99
 LDFLAGS+=-pthread
 LDLIBS=-lmicrohttpd
@@ -10,7 +11,7 @@ STRIP=yes
 
 NDS_OBJS=src/auth.o src/client_list.o src/commandline.o src/conf.o \
 	src/debug.o src/fw_iptables.o src/main.o src/http_microhttpd.o src/http_microhttpd_utils.o \
-	src/ndsctl_thread.o src/safe.o src/tc.o src/util.o src/template.o
+	src/ndsctl_thread.o src/safe.o src/tc.o src/util.o src/template.o src/aes.o
 
 .PHONY: all clean install checkastyle fixstyle deb
 

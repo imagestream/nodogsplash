@@ -79,6 +79,7 @@ typedef enum {
 	oFasPath,
 	oFasRemoteIP,
 	oFasSecureEnabled,
+	oFasKey,
 	oHTTPDMaxConn,
 	oWebRoot,
 	oSplashPage,
@@ -133,6 +134,7 @@ static const struct {
 	{ "fasremoteip", oFasRemoteIP },
 	{ "fas_secure_enabled", oFasSecureEnabled },
 	{ "faspath", oFasPath },
+	{ "faskey", oFasKey },
 	{ "webroot", oWebRoot },
 	{ "splashpage", oSplashPage },
 	{ "statuspage", oStatusPage },
@@ -206,6 +208,7 @@ config_init(void)
 	config.gw_port = DEFAULT_GATEWAYPORT;
 	config.fas_port = DEFAULT_FASPORT;
 	config.fas_secure_enabled = DEFAULT_FAS_SECURE_ENABLED;
+	config.fas_key = NULL;
 	config.fas_remoteip = NULL;
 	config.fas_path = DEFAULT_FASPATH;
 	config.webroot = safe_strdup(DEFAULT_WEBROOT);
@@ -784,6 +787,9 @@ config_read(const char *filename)
 			break;
 		case oFasRemoteIP:
 			config.fas_remoteip = safe_strdup(p1);
+			break;
+		case oFasKey:
+			config.fas_key = safe_strdup(p1);
 			break;
 		case oBinAuth:
 			config.binauth = safe_strdup(p1);

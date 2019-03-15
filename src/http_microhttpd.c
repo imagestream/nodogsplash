@@ -40,6 +40,7 @@
 #include "safe.h"
 #include "template.h"
 #include "util.h"
+#include "aes.h"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -372,6 +373,33 @@ static int check_authdir_match(const char *url, const char *authdir)
 	return 1;
 }
 
+#define AES_256_IV_LEN 16
+static int check_faskey_match(const char *fas_key, const char *tok, const char *fas_auth)
+{
+        struct AES_ctx ctx;
+        char buf[256], *check;
+        uint8_t iv[AES_256_IV_LEN];
+	int match;
+
+	/* No key configured, it's ok */
+	if (!fas_key)
+		return 1;
+	if (tok && fas_auth) {
+        	uh_b64decode(buf, 256, fas_auth, strlen(fas_auth));
+        	memcpy(iv, buf, AES_256_IV_LEN);
+        	AES_init_ctx_iv(&ctx, fas_key, iv);
+		check = buf + AES_256_IV_LEN;
+        	AES_CBC_decrypt_buffer(&ctx, check, strlen(check));
+		match = strcmp(check, tok);
+		debug(LOG_DEBUG, "match=%d tok=%s decrypted fas_auth=%s ", match, tok, check );
+		if (!match)
+			debug(LOG_WARNING, "FAS Auth Token is invalid" );
+        	return match;
+	}
+	debug(LOG_WARNING, "FAS Auth Token required but not found" );
+	return 0;
+}
+
 /**
  * @brief try_to_authenticate
  * @param connection
@@ -383,7 +411,7 @@ static int check_authdir_match(const char *url, const char *authdir)
 static int try_to_authenticate(struct MHD_Connection *connection, t_client *client, const char *host, const char *url)
 {
 	s_config *config;
-	const char *tok;
+	const char *tok, *fas_auth;
 
 	/* a successful auth looks like
 	 * http://192.168.42.1:2050/nodogsplash_auth/?redir=http%3A%2F%2Fberlin.freifunk.net%2F&tok=94c4cdd2
@@ -398,7 +426,9 @@ static int try_to_authenticate(struct MHD_Connection *connection, t_client *clie
 
 		if (tok && !strcmp(client->token, tok)) {
 			/* Token is valid */
-			return 1;
+			/* Check the FAS auth key if present */
+			fas_auth = MHD_lookup_connection_value(connection, MHD_GET_ARGUMENT_KIND, "fas_auth");
+			return check_faskey_match(config->fas_key, client->token, fas_auth);
 		}
 	}
 
