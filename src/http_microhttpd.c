@@ -390,7 +390,7 @@ static int check_faskey_match(const char *fas_key, const char *tok, const char *
         	AES_init_ctx_iv(&ctx, fas_key, iv);
 		check = buf + AES_256_IV_LEN;
         	AES_CBC_decrypt_buffer(&ctx, check, strlen(check));
-		match = strcmp(check, tok);
+		match = !memcmp(check, tok, strlen(tok));
 		debug(LOG_DEBUG, "match=%d tok=%s decrypted fas_auth=%s ", match, tok, check );
 		if (!match)
 			debug(LOG_WARNING, "FAS Auth Token is invalid" );
