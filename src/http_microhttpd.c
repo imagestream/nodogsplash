@@ -40,6 +40,7 @@
 #include "safe.h"
 #include "template.h"
 #include "util.h"
+#define AES256 1
 #include "aes.h"
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
@@ -385,12 +386,21 @@ static int check_faskey_match(const char *fas_key, const char *tok, const char *
 	if (!fas_key)
 		return 1;
 	if (tok && fas_auth) {
+		int toklen = strlen(tok);
+		if (toklen > 32) {
+			debug(LOG_WARNING, "Invalid token length %d > 32", toklen );
+			return 0;
+		}
+
+		debug(LOG_DEBUG, "fas_auth=%s fas_key=%s ", fas_auth, fas_key);
         	uh_b64decode(buf, 256, fas_auth, strlen(fas_auth));
         	memcpy(iv, buf, AES_256_IV_LEN);
         	AES_init_ctx_iv(&ctx, fas_key, iv);
 		check = buf + AES_256_IV_LEN;
-        	AES_CBC_decrypt_buffer(&ctx, check, strlen(check));
-		match = !memcmp(check, tok, strlen(tok));
+        	AES_CBC_decrypt_buffer(&ctx, check, toklen);
+		check[toklen] = '\0';
+		match = !memcmp(check, tok, toklen);
+		debug(LOG_DEBUG, "match=%d tok=%s decrypted fas_auth=%s ", match, tok, check );
 		if (!match)
 			debug(LOG_WARNING, "FAS Auth Token is invalid" );
         	return match;
