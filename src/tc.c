@@ -70,7 +70,7 @@ tc_attach_client(const char down_dev[], int download_limit, const char up_dev[],
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip dst %s match ip sport %d 0xffff flowid 1:%d",
 						down_dev, id + 1, ip, 53, id + 1);
 		/* bulk traffic class */
-		rc |= execute("tc class add dev %s parent 1:%d classid 1:%d hfsc ls m1 %dkbit d 100ms m2 %dkbit ul rate %dkbit",
+		rc |= execute("tc class add dev %s parent 1:%d classid 1:%d hfsc ls m1 0kbit d 100ms m2 %dkbit ul rate %dkbit",
 						down_dev, id, id + 2, dlimit / 5, dlimit);
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip dst %s flowid 1:%d",
 						down_dev, id + 2, ip, id + 2);
