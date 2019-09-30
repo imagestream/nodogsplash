@@ -175,8 +175,10 @@ typedef struct {
 	int set_mss;			/**< @brief boolean, whether to set mss */
 	int mss_value;			/**< @brief int, mss value; <= 0 clamp to pmtu */
 	int traffic_control;		/**< @brief boolean, whether to do tc */
-	int download_limit;		/**< @brief Download limit, kb/s */
-	int upload_limit;		/**< @brief Upload limit, kb/s */
+	int download_limit;		/**< @brief Per-client download limit, kb/s */
+	int upload_limit;		/**< @brief Per-client upload limit, kb/s */
+	int main_download_limit;	/**< @brief Main interface download limit, kb/s */
+	int main_upload_limit;		/**< @brief Main interface upload limit, kb/s */
 	int upload_ifb;			/**< @brief Number of IFB handling upload */
 	int log_syslog;			/**< @brief boolean, whether to log to syslog */
 	int syslog_facility;		/**< @brief facility to use when using syslog for logging */

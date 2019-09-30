@@ -96,6 +96,8 @@ typedef enum {
 	oTrafficControl,
 	oDownloadLimit,
 	oUploadLimit,
+	oMainDownloadLimit,
+	oMainUploadLimit,
 	oUploadIFB,
 	oNdsctlSocket,
 	oSyslogFacility,
@@ -151,6 +153,8 @@ static const struct {
 	{ "trafficcontrol",	oTrafficControl },
 	{ "downloadlimit", oDownloadLimit },
 	{ "uploadlimit", oUploadLimit },
+	{ "main_downloadlimit", oMainDownloadLimit },
+	{ "main_uploadlimit", oMainUploadLimit },
 	{ "ifb", oUploadIFB },
 	{ "syslogfacility", oSyslogFacility },
 	{ "ndsctlsocket", oNdsctlSocket },
@@ -233,6 +237,8 @@ config_init(void)
 	config.traffic_control = DEFAULT_TRAFFIC_CONTROL;
 	config.upload_limit =  DEFAULT_UPLOAD_LIMIT;
 	config.download_limit = DEFAULT_DOWNLOAD_LIMIT;
+	config.main_upload_limit =  DEFAULT_UPLOAD_LIMIT;
+	config.main_download_limit = DEFAULT_DOWNLOAD_LIMIT;
 	config.upload_ifb =  DEFAULT_UPLOAD_IFB;
 	config.syslog_facility = DEFAULT_SYSLOG_FACILITY;
 	config.log_syslog = DEFAULT_LOG_SYSLOG;
@@ -918,6 +924,20 @@ config_read(const char *filename)
 			break;
 		case oUploadLimit:
 			if (sscanf(p1, "%d", &config.upload_limit) < 1 || config.upload_limit < 0) {
+				debug(LOG_ERR, "Bad arg %s to option %s on line %d in %s", p1, s, linenum, filename);
+				debug(LOG_ERR, "Exiting...");
+				exit(1);
+			}
+			break;
+		case oMainDownloadLimit:
+			if (sscanf(p1, "%d", &config.main_download_limit) < 1 || config.main_download_limit < 0) {
+				debug(LOG_ERR, "Bad arg %s to option %s on line %d in %s", p1, s, linenum, filename);
+				debug(LOG_ERR, "Exiting...");
+				exit(1);
+			}
+			break;
+		case oMainUploadLimit:
+			if (sscanf(p1, "%d", &config.main_upload_limit) < 1 || config.main_upload_limit < 0) {
 				debug(LOG_ERR, "Bad arg %s to option %s on line %d in %s", p1, s, linenum, filename);
 				debug(LOG_ERR, "Exiting...");
 				exit(1);
