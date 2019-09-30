@@ -75,9 +75,9 @@ tc_attach_client(const char down_dev[], int download_limit, const char up_dev[],
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip dst %s flowid 1:%d",
 						down_dev, id + 2, ip, id + 2);
 		/* codel for each leaf class */
-		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel limit 800 quantum 300 ecn",
+		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						down_dev, id + 1, id + 1);
-		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel limit 800 quantum 300 ecn",
+		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						down_dev, id + 2, id + 2);
 	}
 	if (ulimit > 0) {
@@ -97,9 +97,9 @@ tc_attach_client(const char down_dev[], int download_limit, const char up_dev[],
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip src %s flowid 1:%d",
 						up_dev, id + 2, ip, id + 2);
 		/* codel for each leaf class */
-		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel limit 800 quantum 300 ecn",
+		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						up_dev, id + 1, id + 1);
-		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel limit 800 quantum 300 ecn",
+		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						up_dev, id + 2, id + 2);
 	}
 
