@@ -146,6 +146,7 @@ generate_uci_config() {
     gatewayaddress gatewayport webroot splashpage statuspage \
     redirecturl sessiontimeout preauthidletimeout authidletimeout checkinterval \
     setmss mssvalue trafficcontrol downloadlimit uploadlimit \
+    main_downloadlimit main_uploadlimit \
     syslogfacility ndsctlsocket fw_mark_authenticated \
     fw_mark_blocked fw_mark_trusted
   do
