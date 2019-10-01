@@ -62,7 +62,6 @@ tc_attach_client(const char down_dev[], int download_limit, const char up_dev[],
 		/* guarantee 20% bandwidth, upper limit 100% */
 		rc |= execute("tc class add dev %s parent 1:1 classid 1:%d hfsc sc rate %dkbit ul rate %dkbit",
 						down_dev, id, dlimit / 5, dlimit);
-#if 0
 		/* low latency class for DNS and ICMP */
 		rc |= execute("tc class add dev %s parent 1:%d classid 1:%d hfsc rt m1 %dkbit d 25ms m2 %dkbit ls m1 %dkbit d 25ms m2 %dkbit ul rate %dkbit",
 						down_dev, id, id + 1, (dlimit / 5) * 4, dlimit / 20, dlimit / 10, dlimit / 10, dlimit);
@@ -70,18 +69,14 @@ tc_attach_client(const char down_dev[], int download_limit, const char up_dev[],
 						down_dev, id, ip, 1, id + 1);
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip dst %s match ip sport %d 0xffff flowid 1:%d",
 						down_dev, id + 1, ip, 53, id + 1);
-#endif
 		/* bulk traffic class */
 		rc |= execute("tc class add dev %s parent 1:%d classid 1:%d hfsc ls m1 0kbit d 100ms m2 %dkbit ul rate %dkbit",
 						down_dev, id, id + 2, dlimit / 5, dlimit);
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip dst %s flowid 1:%d",
 						down_dev, id + 2, ip, id + 2);
-
 		/* codel for each leaf class */
-#if 0
 		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						down_dev, id + 1, id + 1);
-#endif
 		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						down_dev, id + 2, id + 2);
 	}
@@ -89,7 +84,6 @@ tc_attach_client(const char down_dev[], int download_limit, const char up_dev[],
 		/* guarantee 20% bandwidth, upper limit 100% */
 		rc |= execute("tc class add dev %s parent 1:1 classid 1:%d hfsc sc rate %dkbit ul rate %dkbit",
 						up_dev, id, ulimit / 5, ulimit);
-#if 0
 		/* low latency class for DNS and ICMP */
 		rc |= execute("tc class add dev %s parent 1:%d classid 1:%d hfsc rt m1 %dkbit d 25ms m2 %dkbit ls m1 %dkbit d 25ms m2 %dkbit ul rate %dkbit",
 						up_dev, id, id + 1, (ulimit / 5) * 4, ulimit / 20, ulimit / 10, ulimit / 10, ulimit);
@@ -97,18 +91,14 @@ tc_attach_client(const char down_dev[], int download_limit, const char up_dev[],
 						up_dev, id, ip, 1, id + 1);
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip src %s match ip dport %d 0xffff flowid 1:%d",
 						up_dev, id + 1, ip, 53, id + 1);
-#endif
 		/* bulk traffic class */
 		rc |= execute("tc class add dev %s parent 1:%d classid 1:%d hfsc ls m1 0kbit d 100ms m2 %dkbit ul rate %dkbit",
 						up_dev, id, id + 2, ulimit / 5, ulimit);
 		rc |= execute("tc filter add dev %s protocol ip parent 1: prio %d u32 match ip src %s flowid 1:%d",
 						up_dev, id + 2, ip, id + 2);
-
 		/* codel for each leaf class */
-#if 0
 		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						up_dev, id + 1, id + 1);
-#endif
 		rc |= execute("tc qdisc add dev %s parent 1:%d handle %d: fq_codel ecn",
 						up_dev, id + 2, id + 2);
 	}
